@@ -1,122 +1,125 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useState, useEffect, useRef } from 'react'
+import { loadTodos, saveTodos, generateId } from './utils/storage'
+import { LogoIcon, PlusIcon } from './components/Icons'
+import TodoItem from './components/TodoItem'
+import EmptyState from './components/EmptyState'
+import FilterBar from './components/FilterBar'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [todos, setTodos] = useState(loadTodos)
+  const [input, setInput] = useState('')
+  const [filter, setFilter] = useState('all')
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    saveTodos(todos)
+  }, [todos])
+
+  const addTodo = (e) => {
+    e.preventDefault()
+    const text = input.trim()
+    if (!text) return
+    setTodos((prev) => [{ id: generateId(), text, completed: false }, ...prev])
+    setInput('')
+    inputRef.current?.focus()
+  }
+
+  const toggleTodo = (id) => {
+    setTodos((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+    )
+  }
+
+  const deleteTodo = (id) => {
+    setTodos((prev) => prev.filter((t) => t.id !== id))
+  }
+
+  const clearCompleted = () => {
+    setTodos((prev) => prev.filter((t) => !t.completed))
+  }
+
+  const filtered = todos.filter((t) => {
+    if (filter === 'active') return !t.completed
+    if (filter === 'completed') return t.completed
+    return true
+  })
+
+  const remaining = todos.filter((t) => !t.completed).length
+  const hasCompleted = todos.some((t) => t.completed)
+
+  const today = new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+  })
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <div className="orb orb-1" />
+      <div className="orb orb-2" />
+      <div className="orb orb-3" />
 
-      <div className="ticks"></div>
+      <div className="app">
+        <header className="header">
+          <div className="logo">
+            <div className="logo-icon">
+              <LogoIcon />
+            </div>
+            <h1>Todo</h1>
+          </div>
+          <span className="date">{today}</span>
+        </header>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
+        <form className="input-wrapper" onSubmit={addTodo}>
+          <input
+            ref={inputRef}
+            id="todo-input"
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="What needs to be done?"
+            autoComplete="off"
+          />
+          <button type="submit" className="add-btn" id="add-btn" aria-label="Add task">
+            <PlusIcon />
+          </button>
+        </form>
+
+        <FilterBar filter={filter} onFilterChange={setFilter} />
+
+        {filtered.length === 0 ? (
+          <EmptyState filter={filter} />
+        ) : (
+          <ul className="todo-list" aria-label="Task list">
+            {filtered.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onToggle={toggleTodo}
+                onDelete={deleteTodo}
+              />
+            ))}
           </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+        {todos.length > 0 && (
+          <footer className="footer">
+            <span>
+              {remaining} task{remaining !== 1 ? 's' : ''} remaining
+            </span>
+            {hasCompleted && (
+              <button
+                className="clear-btn"
+                id="clear-completed-btn"
+                onClick={clearCompleted}
+              >
+                Clear completed
+              </button>
+            )}
+          </footer>
+        )}
+      </div>
     </>
   )
 }
-
-export default App

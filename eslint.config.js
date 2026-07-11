@@ -23,9 +23,10 @@ export default [
       'react-refresh': reactRefresh,
     },
     rules: {
+      ...js.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^[A-Z]' }],
       'no-console': 'warn',
     },
   },
@@ -33,7 +34,6 @@ export default [
     files: ['**/*.test.{js,jsx}'],
     languageOptions: {
       globals: {
-        ...globals.jest,
         describe: 'readonly',
         it: 'readonly',
         expect: 'readonly',
@@ -41,6 +41,9 @@ export default [
         afterEach: 'readonly',
         vi: 'readonly',
       },
+    },
+    rules: {
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^[A-Z]|within' }],
     },
   },
 ]
