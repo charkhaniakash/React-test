@@ -7,7 +7,7 @@ const messages = {
 }
 
 export default function EmptyState({ filter }) {
-  const msg = messages[filter]
+  const msg = messages["all"]
   return (
     <div className="empty-state" data-testid="empty-state">
       <EmptyIcon />
