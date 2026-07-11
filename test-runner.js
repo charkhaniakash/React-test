@@ -1,4 +1,5 @@
 import { spawnSync } from 'child_process';
+import process from 'process';
 
 // Filter out Jest-specific flags that the external test runner is passing
 const args = process.argv.slice(2).filter(arg => arg !== '--json' && arg !== '--forceExit');
