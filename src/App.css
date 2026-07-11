@@ -160,6 +160,7 @@
 .todo-item:hover {
   background: var(--surface-hover);
   border-color: rgba(255, 255, 255, 0.12);
+  transform: scale(1.01);
 }
 
 .todo-item.completed .todo-text {
