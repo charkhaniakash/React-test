@@ -10,7 +10,7 @@ beforeEach(() => {
 describe('App', () => {
   it('renders the app header', () => {
     render(<App />)
-    expect(screen.getByText('Todo')).toBeInTheDocument()
+    expect(screen.getByText('My Tasks')).toBeInTheDocument()
   })
 
   it('shows empty state when no todos exist', () => {
@@ -23,7 +23,7 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const input = screen.getByPlaceholderText('What needs to be done?')
+    const input = screen.getByPlaceholderText('Add a new task...')
     await user.type(input, 'Buy groceries')
     await user.click(screen.getByLabelText('Add task'))
 
@@ -43,7 +43,7 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const input = screen.getByPlaceholderText('What needs to be done?')
+    const input = screen.getByPlaceholderText('Add a new task...')
     await user.type(input, 'Read a book')
     await user.click(screen.getByLabelText('Add task'))
 
@@ -58,7 +58,7 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const input = screen.getByPlaceholderText('What needs to be done?')
+    const input = screen.getByPlaceholderText('Add a new task...')
 
     await user.type(input, 'Task one')
     await user.click(screen.getByLabelText('Add task'))
@@ -80,7 +80,7 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const input = screen.getByPlaceholderText('What needs to be done?')
+    const input = screen.getByPlaceholderText('Add a new task...')
 
     await user.type(input, 'Task one')
     await user.click(screen.getByLabelText('Add task'))
@@ -100,7 +100,7 @@ describe('App', () => {
     const user = userEvent.setup()
     render(<App />)
 
-    const input = screen.getByPlaceholderText('What needs to be done?')
+    const input = screen.getByPlaceholderText('Add a new task...')
     await user.type(input, 'Finish project')
     await user.click(screen.getByLabelText('Add task'))
 
@@ -115,7 +115,7 @@ describe('App', () => {
     const user = userEvent.setup()
     const { unmount } = render(<App />)
 
-    const input = screen.getByPlaceholderText('What needs to be done?')
+    const input = screen.getByPlaceholderText('Add a new task...')
     await user.type(input, 'Persist me')
     await user.click(screen.getByLabelText('Add task'))
 
