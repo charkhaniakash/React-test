@@ -66,7 +66,7 @@ export default function App() {
             <div className="logo-icon">
               <LogoIcon />
             </div>
-            <h1>Todo</h1>
+            <h1>My Tasks</h1>
           </div>
           <span className="date">{today}</span>
         </header>
@@ -78,7 +78,7 @@ export default function App() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="What needs to be done?"
+            placeholder="Add a new task..."
             autoComplete="off"
           />
           <button type="submit" className="add-btn" id="add-btn" aria-label="Add task">
