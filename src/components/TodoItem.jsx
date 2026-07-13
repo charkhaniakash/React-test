@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { CheckIcon, TrashIcon } from './Icons'
 
 export default function TodoItem({ todo, onToggle, onDelete }) {
-  const [removing, setRemoving] = useState(false)
 
   return (
     <li
