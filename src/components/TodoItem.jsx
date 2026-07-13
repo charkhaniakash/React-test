@@ -4,7 +4,6 @@ import { CheckIcon, TrashIcon } from './Icons'
 export default function TodoItem({ todo, onToggle, onDelete }) {
   const [removing, setRemoving] = useState(false)
 
-
   return (
     <li
       className={`todo-item${todo.completed ? ' completed' : ''}${removing ? ' removing' : ''}`}
@@ -24,7 +23,7 @@ export default function TodoItem({ todo, onToggle, onDelete }) {
       <span className="todo-text">{todo.text}</span>
       <button
         className="delete-btn"
-        onClick={handleDelete}
+        onClick={() => onDelete(todo.id)}
         aria-label={`Delete "${todo.text}"`}
       >
         <TrashIcon />
