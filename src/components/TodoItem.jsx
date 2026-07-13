@@ -4,10 +4,6 @@ import { CheckIcon, TrashIcon } from './Icons'
 export default function TodoItem({ todo, onToggle, onDelete }) {
   const [removing, setRemoving] = useState(false)
 
-  const handleDelete = () => {
-    setRemoving(true)
-    setTimeout(() => onDelete(todo.id), 280)
-  }
 
   return (
     <li
