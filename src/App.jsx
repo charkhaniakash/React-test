@@ -1,33 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import useTodos from './useTodos';
+import useFilters from './useFilters';
 
 function App() {
-  const [todos, setTodos] = useState(() => {
-    const storedTodos = localStorage.getItem('todos');
-    return storedTodos ? JSON.parse(storedTodos) : [];
-  });
-  const [newTodo, setNewTodo] = useState('');
-  const [filter, setFilter] = useState('all');
+  const { todos, addTodo, toggleCompleted, clearCompleted } = useTodos();
+  const { filter, setFilter } = useFilters();
 
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-  }, [todos]);
-
-  const handleAddTodo = () => {
+  const handleAddTodo = (newTodo) => {
     if (!newTodo.trim()) return;
-    const newTodos = [...todos, { text: newTodo, completed: false }];
-    setTodos(newTodos);
-    setNewTodo('');
-  };
-
-  const handleToggleCompleted = (index) => {
-    const newTodos = [...todos];
-    newTodos[index].completed = !newTodos[index].completed;
-    setTodos(newTodos);
-  };
-
-  const handleClearCompleted = () => {
-    const newTodos = todos.filter((todo) => !todo.completed);
-    setTodos(newTodos);
+    addTodo(newTodo);
   };
 
   const filteredTodos = todos.filter((todo) => {
@@ -40,19 +21,19 @@ function App() {
     <div>
       <h1>My Tasks</h1>
       <input
-        type="text"
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        placeholder="Add a new task..."
+        type='text'
+        value={''}
+        onChange={(e) => handleAddTodo(e.target.value)}
+        placeholder='Add a new task...'
       />
-      <button onClick={handleAddTodo}>Add task</button>
+      <button onClick={() => handleAddTodo('')}>Add task</button>
       <ul>
         {filteredTodos.map((todo, index) => (
           <li key={index}>
             <input
-              type="checkbox"
+              type='checkbox'
               checked={todo.completed}
-              onChange={() => handleToggleCompleted(index)}
+              onChange={() => toggleCompleted(todo.text)}
             />
             <span>{todo.text}</span>
           </li>
@@ -63,9 +44,9 @@ function App() {
         <button onClick={() => setFilter('active')}>Active</button>
         <button onClick={() => setFilter('done')}>Done</button>
       </div>
-      <button onClick={handleClearCompleted}>Clear completed</button>
-      {todos.length === 0 && (
-        <p>No tasks yet</p>
+      <button onClick={clearCompleted}>Clear completed</button>
+      {filteredTodos.length === 0 && (
+        <p data-testid='empty-state'>No tasks yet</p>
       )}
     </div>
   );
