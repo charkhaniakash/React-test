@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useFilters = (todos) => {
+const useFilters = (todos = []) => {
   const [filter, setFilter] = useState('all');
 
   const filteredTodos = todos.filter((todo) => {
