@@ -5,48 +5,24 @@ const useTodos = () => {
     const storedTodos = localStorage.getItem('todos');
     return storedTodos ? JSON.parse(storedTodos) : [];
   });
-  const [newTodo, setNewTodo] = useState('');
-  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
-  const handleAddTodo = () => {
-    if (!newTodo.trim()) return;
-    const newTodos = [...todos, { text: newTodo, completed: false }];
-    setTodos(newTodos);
-    setNewTodo('');
+  const addTodo = (text) => {
+    setTodos((prevTodos) => [...prevTodos, { text, completed: false }]);
   };
 
-  const handleToggleCompleted = (index) => {
-    const newTodos = [...todos];
-    newTodos[index].completed = !newTodos[index].completed;
-    setTodos(newTodos);
+  const toggleCompleted = (text) => {
+    setTodos((prevTodos) => prevTodos.map((todo) => todo.text === text ? { ...todo, completed: !todo.completed } : todo));
   };
 
-  const handleClearCompleted = () => {
-    const newTodos = todos.filter((todo) => !todo.completed);
-    setTodos(newTodos);
+  const clearCompleted = () => {
+    setTodos((prevTodos) => prevTodos.filter((todo) => !todo.completed));
   };
 
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === 'all') return true;
-    if (filter === 'active') return !todo.completed;
-    if (filter === 'done') return todo.completed;
-  });
-
-  return {
-    todos,
-    newTodo,
-    filter,
-    handleAddTodo,
-    handleToggleCompleted,
-    handleClearCompleted,
-    setNewTodo,
-    setFilter,
-    filteredTodos
-  };
+  return { todos, addTodo, toggleCompleted, clearCompleted };
 };
 
 export default useTodos;
