@@ -1,37 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useTodos from './useTodos';
 import useFilters from './useFilters';
 
 function App() {
   const { todos, addTodo, toggleCompleted, clearCompleted } = useTodos();
-  const { filter, setFilter } = useFilters();
+  const { filter, setFilter, filteredTodos } = useFilters(todos);
+  const [inputValue, setInputValue] = useState('');
 
-  const handleAddTodo = (newTodo) => {
-    if (!newTodo.trim()) return;
-    addTodo(newTodo);
+  const handleAddTodo = () => {
+    if (!inputValue.trim()) return;
+    addTodo(inputValue);
+    setInputValue('');
   };
 
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === 'all') return true;
-    if (filter === 'active') return !todo.completed;
-    if (filter === 'done') return todo.completed;
-  });
+  const activeCount = todos.filter((todo) => !todo.completed).length;
 
   return (
     <div>
       <h1>My Tasks</h1>
       <input
         type='text'
-        value={''}
-        onChange={(e) => handleAddTodo(e.target.value)}
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
         placeholder='Add a new task...'
       />
-      <button onClick={() => handleAddTodo('')}>Add task</button>
+      <button aria-label="Add task" onClick={handleAddTodo}>Add task</button>
       <ul>
         {filteredTodos.map((todo, index) => (
           <li key={index}>
             <input
               type='checkbox'
+              aria-label={`Mark "${todo.text}"`}
+              aria-checked={todo.completed}
               checked={todo.completed}
               onChange={() => toggleCompleted(todo.text)}
             />
@@ -40,10 +40,11 @@ function App() {
         ))}
       </ul>
       <div>
-        <button onClick={() => setFilter('all')}>All</button>
-        <button onClick={() => setFilter('active')}>Active</button>
-        <button onClick={() => setFilter('done')}>Done</button>
+        <button role='tab' onClick={() => setFilter('all')}>All</button>
+        <button role='tab' onClick={() => setFilter('active')}>Active</button>
+        <button role='tab' onClick={() => setFilter('done')}>Done</button>
       </div>
+      <p>{activeCount} task{activeCount === 1 ? '' : 's'} remaining</p>
       <button onClick={clearCompleted}>Clear completed</button>
       {filteredTodos.length === 0 && (
         <p data-testid='empty-state'>No tasks yet</p>
