@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useTodos from './useTodos';
 import useFilters from './useFilters';
 
 function App() {
-  const { todos, addTodo, toggleCompleted, clearCompleted } = useTodos();
+  const {
+    todos,
+    newTodo: inputValue,
+    setNewTodo: setInputValue,
+    handleAddTodo,
+    handleToggleCompleted,
+    handleClearCompleted
+  } = useTodos();
+  
   const { filter, setFilter, filteredTodos } = useFilters(todos);
-  const [inputValue, setInputValue] = useState('');
-
-  const handleAddTodo = () => {
-    if (!inputValue.trim()) return;
-    addTodo(inputValue);
-    setInputValue('');
-  };
 
   const activeCount = todos.filter((todo) => !todo.completed).length;
 
@@ -33,7 +34,7 @@ function App() {
               aria-label={`Mark "${todo.text}"`}
               aria-checked={todo.completed}
               checked={todo.completed}
-              onChange={() => toggleCompleted(todo.text)}
+              onChange={() => handleToggleCompleted(todos.indexOf(todo))}
             />
             <span>{todo.text}</span>
           </li>
@@ -45,7 +46,7 @@ function App() {
         <button role='tab' onClick={() => setFilter('done')}>Done</button>
       </div>
       <p>{activeCount} task{activeCount === 1 ? '' : 's'} remaining</p>
-      <button onClick={clearCompleted}>Clear completed</button>
+      <button onClick={handleClearCompleted}>Clear completed</button>
       {filteredTodos.length === 0 && (
         <p data-testid='empty-state'>No tasks yet</p>
       )}
