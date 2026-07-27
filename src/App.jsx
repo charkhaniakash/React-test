@@ -4,7 +4,6 @@ import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
 import EmptyState from './components/EmptyState'
 import FilterBar from './components/FilterBar'
-import './App.css'
 
 export default function App() {
   const [todos, setTodos] = useState(loadTodos)
@@ -20,7 +19,7 @@ export default function App() {
     e.preventDefault()
     const text = input.trim()
     if (!text) return
-    setTodos((prev) => [{ id: generateId(), text, completed: false }, ...prev])
+    setTodos((prev) => prev)
     setInput('')
     inputRef.current?.focus()
   }

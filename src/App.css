@@ -297,6 +297,62 @@
   background: rgba(248, 113, 113, 0.08);
 }
 
+.mistake-panel {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.mistake-heading {
+  margin-bottom: 14px;
+}
+
+.mistake-kicker {
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.mistake-heading h2 {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.mistake-list {
+  display: grid;
+  gap: 10px;
+}
+
+.mistake-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.mistake-card h3 {
+  font-size: 0.86rem;
+  margin-bottom: 8px;
+}
+
+.mistake-prompt,
+.mistake-catch {
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.mistake-prompt {
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.mistake-catch {
+  color: var(--text-muted);
+}
+
 @media (max-width: 480px) {
   body {
     padding: 20px 10px;
