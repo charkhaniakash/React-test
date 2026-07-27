@@ -1,3 +1,4 @@
+// File: src/App.jsx
 import { useState, useEffect, useRef } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
 import { LogoIcon, PlusIcon } from './components/Icons'
@@ -19,7 +20,8 @@ export default function App() {
     e.preventDefault()
     const text = input.trim()
     if (!text) return
-    setTodos((prev) => prev)
+    const newTodo = { id: generateId(), text: text, completed: false }
+    setTodos((prev) => [...prev, newTodo])
     setInput('')
     inputRef.current?.focus()
   }
