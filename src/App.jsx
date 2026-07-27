@@ -9,7 +9,7 @@ function App() {
 
   const handleAddTodo = () => {
     if (!inputValue.trim()) return;
-    addTodo(inputValue);
+    addTodo({ text: inputValue, completed: false });
     setInputValue('');
   };
 
