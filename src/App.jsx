@@ -13,6 +13,13 @@ function App() {
   } = useTodos();
   
   const { filter, setFilter, filteredTodos } = useFilters(todos);
+  const [inputValue, setInputValue] = useState('');
+
+  const handleAddTodo = () => {
+    if (!inputValue.trim()) return;
+    addTodo({ text: inputValue, completed: false });
+    setInputValue('');
+  };
 
   const activeCount = todos.filter((todo) => !todo.completed).length;
 
