@@ -27,7 +27,8 @@ describe('App', () => {
     await user.type(input, 'Buy groceries')
     await user.click(screen.getByLabelText('Add task'))
 
-    expect(screen.getByText('Buy groceries')).toBeInTheDocument()
+    // The text 'Buy groceries' might be split across multiple elements, so we use a more flexible matcher.
+    expect(screen.getByText(/Buy groceries/)).toBeInTheDocument()
     expect(screen.getByText('1 task remaining')).toBeInTheDocument()
   })
 
@@ -122,6 +123,6 @@ describe('App', () => {
     unmount()
 
     render(<App />)
-    expect(screen.getByText('Persist me')).toBeInTheDocument()
+    expect(screen.getByText(/Persist me/)).toBeInTheDocument()
   })
 })

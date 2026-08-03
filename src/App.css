@@ -6,6 +6,12 @@
   border-radius: 20px;
   padding: 32px 28px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.app:hover {
+  box-shadow: 0 32px 96px rgba(0, 0, 0, 0.5);
+  transform: translateY(-5px) scale(1.01);
 }
 
 /* Header */
