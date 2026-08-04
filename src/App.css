@@ -137,6 +137,16 @@
   color: var(--text);
 }
 
+/* Add hover and active states for filter buttons */
+.filter-btn:hover {
+  background: var(--surface-hover);
+}
+
+.filter-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 12px var(--accent-glow);
+}
+
 /* Todo list */
 .todo-list {
   list-style: none;
