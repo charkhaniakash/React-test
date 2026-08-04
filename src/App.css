@@ -153,13 +153,15 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 14px 16px;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s, opacity 0.3s;
+  /* Added transition for visual feedback */
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   animation: slideIn 0.3s ease-out;
 }
 
 .todo-item:hover {
   background: var(--surface-hover);
   border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .todo-item.completed .todo-text {
