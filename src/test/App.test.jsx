@@ -27,7 +27,20 @@ describe('App', () => {
     await user.type(input, 'Buy groceries')
     await user.click(screen.getByLabelText('Add task'))
 
-    expect(screen.getByText('Buy groceries')).toBeInTheDocument()
+    // Assert the todo item text
+    const todoTextElement = screen.getByText('Buy groceries')
+    expect(todoTextElement).toBeInTheDocument()
+
+    // Find the parent list item of the todo text
+    // Assuming the todo item is an li, and the timestamp is within it.
+    const todoListItem = todoTextElement.closest('li')
+    expect(todoListItem).toBeInTheDocument() // Ensure we found the list item
+
+    // Assert the presence of a timestamp within the todo item.
+    // We expect a text that indicates a recent creation, e.g., "just now" or "X seconds ago".
+    expect(within(todoListItem).getByText(/now|ago/i)).toBeInTheDocument()
+
+    // Assert the task count
     expect(screen.getByText('1 task remaining')).toBeInTheDocument()
   })
 

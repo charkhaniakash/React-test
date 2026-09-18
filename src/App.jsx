@@ -1,10 +1,10 @@
-// File: src/App.jsx
 import { useState, useEffect, useRef } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
 import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
 import EmptyState from './components/EmptyState'
 import FilterBar from './components/FilterBar'
+import './App.css'
 
 export default function App() {
   const [todos, setTodos] = useState(loadTodos)
@@ -20,7 +20,7 @@ export default function App() {
     e.preventDefault()
     const text = newTodoText.trim()
     if (!text) return
-    const newTodo = { id: generateId(), text: text, completed: false }
+    const newTodo = { id: generateId(), text: text, completed: false, createdAt: new Date().toISOString() }
     setTodos((prev) => [...prev, newTodo])
     setNewTodoText('')
     inputRef.current?.focus()
@@ -82,13 +82,7 @@ export default function App() {
             placeholder="Add a new task..."
             autoComplete="off"
           />
-          <button 
-            type="submit" 
-            className="add-btn" 
-            id="add-btn" 
-            aria-label="Add task"
-            disabled={newTodoText.trim().length === 0}
-          >
+          <button type="submit" className="add-btn" id="add-btn" aria-label="Add task" disabled={!input.trim()}>
             <PlusIcon />
           </button>
         </form>
