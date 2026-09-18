@@ -1,16 +1,16 @@
 const STORAGE_KEY = 'todo-app-items'
 
-export function loadTodos() {
+export function loadTodos(key = STORAGE_KEY) {
   try {
-    const data = localStorage.getItem(STORAGE_KEY)
+    const data = localStorage.getItem(key)
     return data ? JSON.parse(data) : []
   } catch {
     return []
   }
 }
 
-export function saveTodos(todos) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+export function saveTodos(todos, key = STORAGE_KEY) {
+  localStorage.setItem(key, JSON.stringify(todos))
 }
 
 export function generateId() {

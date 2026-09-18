@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { formatRelativeTime } from '../utils/storage'
 import { CheckIcon, TrashIcon } from './Icons'
 
-export default function TodoItem({ todo, onToggle, onDelete }) {
+export default function TodoItem({ todo, onToggle, onDelete, isArchivedView, onRestore, onPermanentlyDelete }) {
   const [removing, setRemoving] = useState(false)
 
   return (
