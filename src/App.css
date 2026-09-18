@@ -221,6 +221,13 @@
   transition: color 0.25s;
 }
 
+.todo-timestamp {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: auto;
+  padding-left: 10px;
+}
+
 .delete-btn {
   background: none;
   border: none;
