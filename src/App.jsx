@@ -5,6 +5,7 @@ import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
 import EmptyState from './components/EmptyState'
 import FilterBar from './components/FilterBar'
+import './App.css'
 
 export default function App() {
   const [todos, setTodos] = useState(loadTodos)
