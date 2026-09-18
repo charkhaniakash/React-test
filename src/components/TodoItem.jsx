@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatRelativeTime } from '../utils/storage'
 import { CheckIcon, TrashIcon } from './Icons'
 
 export default function TodoItem({ todo, onToggle, onDelete }) {
@@ -21,6 +22,7 @@ export default function TodoItem({ todo, onToggle, onDelete }) {
         <CheckIcon />
       </div>
       <span className="todo-text">{todo.text}</span>
+      <span className="todo-timestamp">{formatRelativeTime(todo.createdAt)}</span>
       <button
         className="delete-btn"
         onClick={(e) => {

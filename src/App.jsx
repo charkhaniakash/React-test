@@ -20,7 +20,7 @@ export default function App() {
     e.preventDefault()
     const text = input.trim()
     if (!text) return
-    const newTodo = { id: generateId(), text: text, completed: false }
+    const newTodo = { id: generateId(), text: text, completed: false, createdAt: new Date().toISOString() }
     setTodos((prev) => [...prev, newTodo])
     setInput('')
     inputRef.current?.focus()
