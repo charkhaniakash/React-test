@@ -42,7 +42,7 @@ export default function App() {
     setTodos((prev) => {
       const todoToArchive = prev.find((t) => t.id === id)
       if (todoToArchive) {
-        setArchivedTodos((archivedPrev) => [...archivedPrev, todoToArchive])
+        setArchivedTodos((archivedPrev) => [...archivedPrev, { ...todoToArchive, deletedAt: new Date().toISOString() }])
       }
       return prev.filter((t) => t.id !== id)
     })
@@ -52,7 +52,9 @@ export default function App() {
     setArchivedTodos((archivedPrev) => {
       const todoToRestore = archivedPrev.find((t) => t.id === id)
       if (todoToRestore) {
-        setTodos((todosPrev) => [...todosPrev, todoToRestore])
+        // Remove deletedAt property when restoring
+        const { deletedAt, ...restoredTodo } = todoToRestore
+        setTodos((todosPrev) => [...todosPrev, restoredTodo])
       }
       return archivedPrev.filter((t) => t.id !== id)
     })
@@ -65,7 +67,10 @@ export default function App() {
   const clearCompleted = () => {
     setTodos((prev) => {
       const completedTodos = prev.filter((t) => t.completed)
-      setArchivedTodos((archivedPrev) => [...archivedPrev, ...completedTodos])
+      if (completedTodos.length > 0) {
+        const completedAndArchived = completedTodos.map((todo) => ({ ...todo, deletedAt: new Date().toISOString() }))
+        setArchivedTodos((archivedPrev) => [...archivedPrev, ...completedAndArchived])
+      }
       return prev.filter((t) => !t.completed)
     })
   }
@@ -116,7 +121,7 @@ export default function App() {
             placeholder="Add a new task..."
             autoComplete="off"
           />
-          <button type="submit" className="add-btn" id="add-btn" aria-label="Add task" disabled={!input.trim()}>
+          <button type="submit" className="add-btn" id="add-btn" aria-label="Add task" disabled={!newTodoText.trim()}>
             <PlusIcon />
           </button>
         </form>
