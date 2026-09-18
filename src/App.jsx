@@ -8,7 +8,7 @@ import './App.css'
 
 export default function App() {
   const [todos, setTodos] = useState(loadTodos)
-  const [input, setInput] = useState('')
+  const [newTodoText, setNewTodoText] = useState('')
   const [filter, setFilter] = useState('all')
   const inputRef = useRef(null)
 
@@ -16,13 +16,13 @@ export default function App() {
     saveTodos(todos)
   }, [todos])
 
-  const addTodo = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    const text = input.trim()
+    const text = newTodoText.trim()
     if (!text) return
     const newTodo = { id: generateId(), text: text, completed: false, createdAt: new Date().toISOString() }
     setTodos((prev) => [...prev, newTodo])
-    setInput('')
+    setNewTodoText('')
     inputRef.current?.focus()
   }
 
@@ -72,13 +72,13 @@ export default function App() {
           <span className="date">{today}</span>
         </header>
 
-        <form className="input-wrapper" onSubmit={addTodo}>
+        <form className="input-wrapper" onSubmit={handleSubmit}>
           <input
             ref={inputRef}
             id="todo-input"
             type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={newTodoText}
+            onChange={(e) => setNewTodoText(e.target.value)}
             placeholder="Add a new task..."
             autoComplete="off"
           />
