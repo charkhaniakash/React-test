@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { CheckIcon, TrashIcon } from './Icons'
+import { CheckIcon, TrashIcon, ArchiveRestoreIcon, XIcon } from './Icons'
 
-export default function TodoItem({ todo, onToggle, onDelete }) {
+export default function TodoItem({ todo, onToggle, onDelete, isArchivedView, onRestore, onPermanentlyDelete }) {
   const [removing, setRemoving] = useState(false)
 
   return (
@@ -9,25 +9,46 @@ export default function TodoItem({ todo, onToggle, onDelete }) {
       className={`todo-item${todo.completed ? ' completed' : ''}${removing ? ' removing' : ''}`}
       data-testid={`todo-item-${todo.id}`}
     >
-      <div
-        className={`checkbox${todo.completed ? ' checked' : ''}`}
-        onClick={() => onToggle(todo.id)}
-        role="checkbox"
-        aria-checked={todo.completed}
-        aria-label={`Mark "${todo.text}" as ${todo.completed ? 'incomplete' : 'complete'}`}
-        tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && onToggle(todo.id)}
-      >
-        <CheckIcon />
-      </div>
+      {!isArchivedView && (
+        <div
+          className={`checkbox${todo.completed ? ' checked' : ''}`}
+          onClick={() => onToggle(todo.id)}
+          role="checkbox"
+          aria-checked={todo.completed}
+          aria-label={`Mark "${todo.text}" as ${todo.completed ? 'incomplete' : 'complete'}`}
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && onToggle(todo.id)}
+        >
+          <CheckIcon />
+        </div>
+      )}
       <span className="todo-text">{todo.text}</span>
-      <button
-        className="delete-btn"
-        onClick={() => onDelete(todo.id)}
-        aria-label={`Delete "${todo.text}"`}
-      >
-        <TrashIcon />
-      </button>
+      {isArchivedView ? (
+        <div className="archive-actions">
+          <button
+            className="restore-btn"
+            onClick={() => onRestore(todo.id)}
+            aria-label={`Restore "${todo.text}"`}
+          >
+            <ArchiveRestoreIcon />
+          </button>
+          <button
+            className="delete-btn permanent"
+            onClick={() => onPermanentlyDelete(todo.id)}
+            aria-label={`Permanently delete "${todo.text}"`}
+          >
+            <XIcon />
+          </button>
+        </div>
+      ) : (
+        <button
+          className="delete-btn"
+          onClick={() => onDelete(todo.id)}
+          aria-label={`Delete "${todo.text}"`}
+        >
+          <TrashIcon />
+        </button>
+      )}
     </li>
   )
 }

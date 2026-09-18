@@ -1,4 +1,3 @@
-// File: src/App.jsx
 import { useState, useEffect, useRef } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
 import { LogoIcon, PlusIcon } from './components/Icons'
@@ -10,11 +9,13 @@ export default function App() {
   const [todos, setTodos] = useState(loadTodos)
   const [newTodoText, setNewTodoText] = useState('')
   const [filter, setFilter] = useState('all')
+  const [archivedTodos, setArchivedTodos] = useState(() => loadTodos('archivedTodos'))
   const inputRef = useRef(null)
 
   useEffect(() => {
     saveTodos(todos)
-  }, [todos])
+    saveTodos('archivedTodos', archivedTodos)
+  }, [todos, archivedTodos])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -37,18 +38,46 @@ export default function App() {
   }
 
   const deleteTodo = (id) => {
-    setTodos((prev) => prev.filter((t) => t.id !== id))
+    setTodos((prev) => {
+      const todoToArchive = prev.find((t) => t.id === id)
+      if (todoToArchive) {
+        setArchivedTodos((archivedPrev) => [...archivedPrev, todoToArchive])
+      }
+      return prev.filter((t) => t.id !== id)
+    })
+  }
+
+  const restoreTodo = (id) => {
+    setArchivedTodos((archivedPrev) => {
+      const todoToRestore = archivedPrev.find((t) => t.id === id)
+      if (todoToRestore) {
+        setTodos((todosPrev) => [...todosPrev, todoToRestore])
+      }
+      return archivedPrev.filter((t) => t.id !== id)
+    })
+  }
+
+  const permanentlyDeleteTodo = (id) => {
+    setArchivedTodos((archivedPrev) => archivedPrev.filter((t) => t.id !== id))
   }
 
   const clearCompleted = () => {
-    setTodos((prev) => prev.filter((t) => !t.completed))
+    setTodos((prev) => {
+      const completedTodos = prev.filter((t) => t.completed)
+      setArchivedTodos((archivedPrev) => [...archivedPrev, ...completedTodos])
+      return prev.filter((t) => !t.completed)
+    })
   }
 
-  const filtered = todos.filter((t) => {
-    if (filter === 'active') return !t.completed
-    if (filter === 'completed') return t.completed
-    return true
-  })
+  const isArchivedView = filter === 'archive'
+
+  const filtered = isArchivedView
+    ? archivedTodos
+    : todos.filter((t) => {
+        if (filter === 'active') return !t.completed
+        if (filter === 'completed') return t.completed
+        return true
+      })
 
   const remaining = todos.filter((t) => !t.completed).length
   const hasCompleted = todos.some((t) => t.completed)
@@ -109,6 +138,9 @@ export default function App() {
                 todo={todo}
                 onToggle={toggleTodo}
                 onDelete={deleteTodo}
+                isArchivedView={isArchivedView}
+                onRestore={restoreTodo}
+                onPermanentlyDelete={permanentlyDeleteTodo}
               />
             ))}
           </ul>
