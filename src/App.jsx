@@ -26,6 +26,10 @@ export default function App() {
     inputRef.current?.focus()
   }
 
+  const handleNewTodoTextChange = (e) => {
+    setNewTodoText(e.target.value)
+  }
+
   const toggleTodo = (id) => {
     setTodos((prev) =>
       prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
@@ -78,7 +82,7 @@ export default function App() {
             id="todo-input"
             type="text"
             value={newTodoText}
-            onChange={(e) => setNewTodoText(e.target.value)}
+            onChange={handleNewTodoTextChange}
             placeholder="Add a new task..."
             autoComplete="off"
           />
