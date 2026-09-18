@@ -1,4 +1,3 @@
-// File: src/App.jsx
 import { useState, useEffect, useRef } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
 import { LogoIcon, PlusIcon } from './components/Icons'
@@ -83,7 +82,7 @@ export default function App() {
             placeholder="Add a new task..."
             autoComplete="off"
           />
-          <button type="submit" className="add-btn" id="add-btn" aria-label="Add task">
+          <button type="submit" className="add-btn" id="add-btn" aria-label="Add task" disabled={!input.trim()}>
             <PlusIcon />
           </button>
         </form>
