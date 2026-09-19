@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
 import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
-import EmptyState from './components/EmptyState'
+const EmptyState = lazy(() => import('./components/EmptyState'))
 import FilterBar from './components/FilterBar'
 import './App.css'
 
@@ -128,23 +128,25 @@ export default function App() {
 
         <FilterBar filter={filter} onFilterChange={setFilter} />
 
-        {filtered.length === 0 ? (
-          <EmptyState filter={filter} />
-        ) : (
-          <ul className="todo-list" aria-label="Task list">
-            {filtered.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                onToggle={toggleTodo}
-                onDelete={deleteTodo}
-                isArchivedView={isArchivedView}
-                onRestore={restoreTodo}
-                onPermanentlyDelete={permanentlyDeleteTodo}
-              />
-            ))}
-          </ul>
-        )}
+        <Suspense fallback={<div>Loading Empty State...</div>}>
+          {filtered.length === 0 ? (
+            <EmptyState filter={filter} />
+          ) : (
+            <ul className="todo-list" aria-label="Task list">
+              {filtered.map((todo) => (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  onToggle={toggleTodo}
+                  onDelete={deleteTodo}
+                  isArchivedView={isArchivedView}
+                  onRestore={restoreTodo}
+                  onPermanentlyDelete={permanentlyDeleteTodo}
+                />
+              ))}
+            </ul>
+          )}
+        </Suspense>
 
         {todos.length > 0 && (
           <footer className="footer">
