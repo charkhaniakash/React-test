@@ -4,6 +4,7 @@ import { CheckIcon, TrashIcon } from './Icons'
 
 export default function TodoItem({ todo, onToggle, onDelete, isArchivedView, onRestore, onPermanentlyDelete }) {
   const [removing, setRemoving] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
 
   return (
     <li
@@ -23,16 +24,42 @@ export default function TodoItem({ todo, onToggle, onDelete, isArchivedView, onR
       </div>
       <span className="todo-text">{todo.text}</span>
       <span className="todo-timestamp">{formatRelativeTime(todo.createdAt)}</span>
-      <button
-        className="delete-btn"
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete(todo.id);
-        }}
-        aria-label={`Delete "${todo.text}"`}
-      >
-        <TrashIcon />
-      </button>
+      {showConfirmation ? (
+        <div className="confirmation-buttons">
+          <button
+            className="confirm-yes"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(todo.id);
+              setShowConfirmation(false);
+            }}
+            aria-label="Confirm delete"
+          >
+            Yes
+          </button>
+          <button
+            className="confirm-no"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowConfirmation(false);
+            }}
+            aria-label="Cancel delete"
+          >
+            No
+          </button>
+        </div>
+      ) : (
+        <button
+          className="delete-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowConfirmation(true);
+          }}
+          aria-label={`Delete "${todo.text}"`}
+        >
+          <TrashIcon />
+        </button>
+      )}
     </li>
   )
 }
