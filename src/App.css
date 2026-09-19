@@ -13,6 +13,8 @@
   border-radius: 20px;
   padding: 32px 28px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+  max-width: 700px; /* Added for responsiveness */
+  margin: 0 auto; /* Added for responsiveness */
 }
 
 /* Header */
@@ -318,5 +320,68 @@
   .app {
     padding: 24px 18px;
     border-radius: 16px;
+  }
+
+  /* Header responsiveness */
+  .logo h1 {
+    font-size: 1.3rem;
+  }
+  .date {
+    font-size: 0.7rem;
+  }
+
+  /* Input responsiveness */
+  .input-wrapper {
+    flex-direction: column;
+  }
+  .add-btn {
+    width: 100%;
+    height: 44px; /* Slightly reduce height for smaller screens */
+  }
+
+  /* Filters responsiveness */
+  .filters {
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    width: calc(50% - 3px); /* 50% width minus half of the gap */
+    padding: 10px 0;
+  }
+
+  /* Todo item responsiveness */
+  .todo-item {
+    flex-wrap: wrap;
+    align-items: flex-start; /* Align items to the start when wrapped */
+  }
+  .todo-timestamp {
+    order: 3; /* Move timestamp below the text */
+    width: 100%;
+    text-align: right;
+    margin-top: 5px; /* Add some space above the timestamp */
+    padding-left: 0; /* Remove left padding */
+  }
+  .delete-btn {
+    order: 2; /* Move delete button next to text, before timestamp */
+    margin-left: auto; /* Push to the right */
+    opacity: 1; /* Always visible on small screens for easier access */
+  }
+  .todo-item:hover .delete-btn {
+    opacity: 1; /* Ensure it stays visible */
+  }
+  .todo-text {
+    flex: 1; /* Allow text to take available space */
+  }
+  .checkbox {
+    order: 1; /* Keep checkbox first */
+  }
+
+  /* Footer responsiveness */
+  .footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .footer span, .clear-btn {
+    text-align: center;
+    width: 100%;
   }
 }
