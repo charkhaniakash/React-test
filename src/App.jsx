@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
+import debounce from './utils/debounce' // New import for debouncing
 import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
 import EmptyState from './components/EmptyState'
@@ -18,14 +19,25 @@ export default function App() {
     saveTodos('archivedTodos', archivedTodos)
   }, [todos, archivedTodos])
 
+  // Core logic for creating a todo, memoized with useCallback to be stable
+  const createTodo = useCallback((text) => {
+    const trimmedText = text.trim()
+    if (!trimmedText) return
+
+    const newTodo = { id: generateId(), text: trimmedText, completed: false, createdAt: new Date().toISOString() }
+    setTodos((prev) => [...prev, newTodo])
+    setNewTodoText('') // Clear input after adding
+    inputRef.current?.focus()
+  }, [setTodos, setNewTodoText]) // Dependencies for createTodo
+
+  // Use useRef to store the debounced version of createTodo, initialized once
+  const debouncedCreateTodo = useMemo(() => debounce(createTodo, 300), [createTodo])
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    const text = newTodoText.trim()
-    if (!text) return
-    const newTodo = { id: generateId(), text: text, completed: false, createdAt: new Date().toISOString() }
-    setTodos((prev) => [...prev, newTodo])
-    setNewTodoText('')
-    inputRef.current?.focus()
+    // Call the debounced function with the current value of newTodoText
+    // This ensures 'createTodo' is called only after 300ms of inactivity.
+    debouncedCreateTodo(newTodoText)
   }
 
   const handleNewTodoTextChange = (e) => {
@@ -91,7 +103,7 @@ export default function App() {
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'short',
-    day: 'numeric',
+    day: 'numeric'
   })
 
   return (
