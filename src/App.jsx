@@ -5,13 +5,15 @@ import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
 import EmptyState from './components/EmptyState'
 import FilterBar from './components/FilterBar'
-import useDebounce from './hooks/useDebounce' // Assuming this path
+import useDebounce from './hooks/useDebounce'
 
 export default function App() {
   const [todos, setTodos] = useState(loadTodos)
   const [input, setInput] = useState('')
   const [filter, setFilter] = useState('all')
   const inputRef = useRef(null)
+
+  const debouncedInput = useDebounce(input, 500)
 
   useEffect(() => {
     saveTodos(todos)
