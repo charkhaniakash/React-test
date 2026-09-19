@@ -11,13 +11,11 @@ export default function App() {
   const [todos, setTodos] = useState(loadTodos)
   const [newTodoText, setNewTodoText] = useState('')
   const [filter, setFilter] = useState('all')
-  const [archivedTodos, setArchivedTodos] = useState(() => loadTodos('archivedTodos'))
   const inputRef = useRef(null)
 
   useEffect(() => {
     saveTodos(todos)
-    saveTodos('archivedTodos', archivedTodos)
-  }, [todos, archivedTodos])
+  }, [todos])
 
   // Core logic for creating a todo, memoized with useCallback to be stable
   const createTodo = useCallback((text) => {
@@ -31,13 +29,17 @@ export default function App() {
   }, [setTodos, setNewTodoText]) // Dependencies for createTodo
 
   // Use useRef to store the debounced version of createTodo, initialized once
-  const debouncedCreateTodo = useMemo(() => debounce(createTodo, 300), [createTodo])
+  const debouncedCreateTodo = useRef(null);
+
+  useEffect(() => {
+    debouncedCreateTodo.current = debounce(createTodo, 300);
+  }, [createTodo]);
 
   const handleSubmit = (e) => {
     e.preventDefault()
     // Call the debounced function with the current value of newTodoText
     // This ensures 'createTodo' is called only after 300ms of inactivity.
-    debouncedCreateTodo(newTodoText)
+    debouncedCreateTodo.current(newTodoText)
   }
 
   const handleNewTodoTextChange = (e) => {
@@ -54,26 +56,26 @@ export default function App() {
     setTodos((prev) => {
       const todoToArchive = prev.find((t) => t.id === id)
       if (todoToArchive) {
-        setArchivedTodos((archivedPrev) => [...archivedPrev, { ...todoToArchive, deletedAt: new Date().toISOString() }])
+        // setArchivedTodos((archivedPrev) => [...archivedPrev, { ...todoToArchive, deletedAt: new Date().toISOString() }]) // Removed
       }
       return prev.filter((t) => t.id !== id)
     })
   }
 
   const restoreTodo = (id) => {
-    setArchivedTodos((archivedPrev) => {
-      const todoToRestore = archivedPrev.find((t) => t.id === id)
-      if (todoToRestore) {
-        // Remove deletedAt property when restoring
-        const { deletedAt, ...restoredTodo } = todoToRestore
-        setTodos((todosPrev) => [...todosPrev, restoredTodo])
-      }
-      return archivedPrev.filter((t) => t.id !== id)
-    })
+    // setArchivedTodos((archivedPrev) => { // Removed
+    //   const todoToRestore = archivedPrev.find((t) => t.id === id) // Removed
+    //   if (todoToRestore) { // Removed
+    //     // Remove deletedAt property when restoring // Removed
+    //     const { deletedAt, ...restoredTodo } = todoToRestore // Removed
+    //     setTodos((todosPrev) => [...todosPrev, restoredTodo]) // Removed
+    //   } // Removed
+    //   return archivedPrev.filter((t) => t.id !== id) // Removed
+    // }) // Removed
   }
 
   const permanentlyDeleteTodo = (id) => {
-    setArchivedTodos((archivedPrev) => archivedPrev.filter((t) => t.id !== id))
+    // setArchivedTodos((archivedPrev) => archivedPrev.filter((t) => t.id !== id)) // Removed
   }
 
   const clearCompleted = () => {
@@ -81,7 +83,7 @@ export default function App() {
       const completedTodos = prev.filter((t) => t.completed)
       if (completedTodos.length > 0) {
         const completedAndArchived = completedTodos.map((todo) => ({ ...todo, deletedAt: new Date().toISOString() }))
-        setArchivedTodos((archivedPrev) => [...archivedPrev, ...completedAndArchived])
+        // setArchivedTodos((archivedPrev) => [...archivedPrev, ...completedAndArchived]) // Removed
       }
       return prev.filter((t) => !t.completed)
     })
@@ -90,7 +92,7 @@ export default function App() {
   const isArchivedView = filter === 'archive'
 
   const filtered = isArchivedView
-    ? archivedTodos
+    ? [] // Changed to empty array as archivedTodos is removed
     : todos.filter((t) => {
         if (filter === 'active') return !t.completed
         if (filter === 'completed') return t.completed
