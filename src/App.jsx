@@ -1,10 +1,11 @@
 // File: src/App.jsx
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
 import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
 import EmptyState from './components/EmptyState'
 import FilterBar from './components/FilterBar'
+import useDebounce from './hooks/useDebounce' // Assuming this path
 
 export default function App() {
   const [todos, setTodos] = useState(loadTodos)
@@ -16,14 +17,21 @@ export default function App() {
     saveTodos(todos)
   }, [todos])
 
-  const addTodo = (e) => {
-    e.preventDefault()
-    const text = input.trim()
-    if (!text) return
+  // Logic for adding a todo, extracted to be debounced
+  const addTodoLogic = useCallback((text) => {
     const newTodo = { id: generateId(), text: text, completed: false }
     setTodos((prev) => [...prev, newTodo])
     setInput('')
     inputRef.current?.focus()
+  }, []) // Dependencies are stable: setTodos, setInput, inputRef
+
+
+
+  const addTodo = (e) => {
+    e.preventDefault() // Prevent default immediately
+    const text = input.trim()
+    if (!text) return
+    addTodoLogic(text)
   }
 
   const toggleTodo = (id) => {
