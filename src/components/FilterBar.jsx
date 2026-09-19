@@ -1,8 +1,7 @@
 const FILTERS = [
   { key: 'all', label: 'All' },
   { key: 'active', label: 'Active' },
-  { key: 'completed', label: 'Done' },
-  { key: 'archive', label: 'Archive' }
+  { key: 'completed', label: 'Done' }
 ]
 
 export default function FilterBar({ filter, onFilterChange }) {
