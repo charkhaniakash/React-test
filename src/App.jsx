@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { loadTodos, saveTodos, generateId } from './utils/storage'
 import { LogoIcon, PlusIcon } from './components/Icons'
 import TodoItem from './components/TodoItem'
-import EmptyState from './components/EmptyState'
+const EmptyState = lazy(() => import('./components/EmptyState'))
 import FilterBar from './components/FilterBar'
 import './App.css'
 
@@ -23,6 +23,7 @@ export default function App() {
     const text = newTodoText.trim()
     if (!text) return
     const newTodo = { id: generateId(), text: text, completed: false, createdAt: new Date().toISOString() }
+    console.log('Adding new todo:', newTodo)
     setTodos((prev) => [...prev, newTodo])
     setNewTodoText('')
     inputRef.current?.focus()
@@ -34,7 +35,14 @@ export default function App() {
 
   const toggleTodo = (id) => {
     setTodos((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+      prev.map((t) => {
+        if (t.id === id) {
+          const newCompletedStatus = !t.completed;
+          console.log(`Toggling todo ID: ${id}, New status: ${newCompletedStatus}`);
+          return { ...t, completed: newCompletedStatus };
+        }
+        return t;
+      })
     )
   }
 
@@ -42,6 +50,7 @@ export default function App() {
     setTodos((prev) => {
       const todoToArchive = prev.find((t) => t.id === id)
       if (todoToArchive) {
+        console.log(`Archiving todo ID: ${id}, Text: "${todoToArchive.text}"`);
         setArchivedTodos((archivedPrev) => [...archivedPrev, { ...todoToArchive, deletedAt: new Date().toISOString() }])
       }
       return prev.filter((t) => t.id !== id)
@@ -52,6 +61,7 @@ export default function App() {
     setArchivedTodos((archivedPrev) => {
       const todoToRestore = archivedPrev.find((t) => t.id === id)
       if (todoToRestore) {
+        console.log(`Restoring todo ID: ${id}, Text: "${todoToRestore.text}"`);
         // Remove deletedAt property when restoring
         const { deletedAt, ...restoredTodo } = todoToRestore
         setTodos((todosPrev) => [...todosPrev, restoredTodo])
@@ -61,13 +71,20 @@ export default function App() {
   }
 
   const permanentlyDeleteTodo = (id) => {
-    setArchivedTodos((archivedPrev) => archivedPrev.filter((t) => t.id !== id))
+    setArchivedTodos((archivedPrev) => {
+      const todoToDelete = archivedPrev.find((t) => t.id === id);
+      if (todoToDelete) {
+        console.log(`Permanently deleting todo ID: ${id}, Text: "${todoToDelete.text}" from archive.`);
+      }
+      return archivedPrev.filter((t) => t.id !== id)
+    })
   }
 
   const clearCompleted = () => {
     setTodos((prev) => {
       const completedTodos = prev.filter((t) => t.completed)
       if (completedTodos.length > 0) {
+        console.log('Clearing and archiving completed todos:', completedTodos.map(t => t.text));
         const completedAndArchived = completedTodos.map((todo) => ({ ...todo, deletedAt: new Date().toISOString() }))
         setArchivedTodos((archivedPrev) => [...archivedPrev, ...completedAndArchived])
       }
@@ -128,23 +145,25 @@ export default function App() {
 
         <FilterBar filter={filter} onFilterChange={setFilter} />
 
-        {filtered.length === 0 ? (
-          <EmptyState filter={filter} />
-        ) : (
-          <ul className="todo-list" aria-label="Task list">
-            {filtered.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                onToggle={toggleTodo}
-                onDelete={deleteTodo}
-                isArchivedView={isArchivedView}
-                onRestore={restoreTodo}
-                onPermanentlyDelete={permanentlyDeleteTodo}
-              />
-            ))}
-          </ul>
-        )}
+        <Suspense fallback={<div>Loading Empty State...</div>}>
+          {filtered.length === 0 ? (
+            <EmptyState filter={filter} />
+          ) : (
+            <ul className="todo-list" aria-label="Task list">
+              {filtered.map((todo) => (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  onToggle={toggleTodo}
+                  onDelete={deleteTodo}
+                  isArchivedView={isArchivedView}
+                  onRestore={restoreTodo}
+                  onPermanentlyDelete={permanentlyDeleteTodo}
+                />
+              ))}
+            </ul>
+          )}
+        </Suspense>
 
         {todos.length > 0 && (
           <footer className="footer">
